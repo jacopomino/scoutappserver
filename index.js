@@ -26,7 +26,7 @@ const setUnsetPercentbuysell=()=>{
     })
   })
 }
-const job = new CronJob('* * * * * *', setUnsetPercentbuysell);
+const job = new CronJob('0 0 0 * * *', setUnsetPercentbuysell);
 
 job.start()
 
@@ -37,7 +37,7 @@ const runPython=()=>{
   console.log(data.toString());
   });
 }
-const job2= new CronJob('* * * * * *', runPython);
+const job2= new CronJob('0 0 0 * * *', runPython);
 
 job2.start()
 
