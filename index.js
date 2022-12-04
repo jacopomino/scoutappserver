@@ -3,6 +3,8 @@ import cors from "cors"
 import bodyParser from "body-parser"
 import { MongoClient, ObjectId} from "mongodb"
 import axios from "axios"
+import {CronJob} from "cron"
+import {spawn} from "child_process"
 
 
 
@@ -13,6 +15,33 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.listen(PORT,()=>{
     console.log("run");
 })
+
+//cron jobs
+const setUnsetPercentbuysell=()=>{
+  MongoClient.connect("mongodb+srv://apo:jac2001min@cluster0.pdunp.mongodb.net/player?retryWrites=true&w=majority", function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("player");
+    dbo.collection("calcio").updateMany({},{$set:{percentbuysell:{buy:0,sell:0}}},(err,result)=>{
+      if (err) throw err;
+    })
+  })
+}
+const job = new CronJob('* * * * * *', setUnsetPercentbuysell);
+
+job.start()
+
+const runPython=()=>{
+  const pythonProcess =spawn("python",["../../scrapping/footballPlayer/transfermarketMongoDB.py"])
+  pythonProcess.stdout.on('data', (data,err) => {
+    if (err){console.log(err);}
+  console.log(data.toString());
+  });
+}
+const job2= new CronJob('* * * * * *', runPython);
+
+job2.start()
+
+
 app.get("/premi", async (req,res)=>{
   //https://couponapi.org/api/getFeed/?API_KEY=dd0c65f351c23560535b8501db5b1721
   axios.get("https://couponapi.org/api/getFeed/?API_KEY=dd0c65f351c23560535b8501db5b1721&format=json&incremental=0&last_extract=1669205598&off_record=1").then(result=>{
