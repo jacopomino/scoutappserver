@@ -30,16 +30,6 @@ const job = new CronJob('0 0 0 * * *', setUnsetPercentbuysell);
 
 job.start()
 
-const runPython=()=>{
-  const pythonProcess =spawn("python",["../../scrapping/footballPlayer/transfermarketMongoDB.py"])
-  pythonProcess.stdout.on('data', (data,err) => {
-    if (err){console.log(err);}
-  console.log(data.toString());
-  });
-}
-const job2= new CronJob('0 0 0 * * *', runPython);
-
-job2.start()
 
 
 app.get("/premi", async (req,res)=>{
